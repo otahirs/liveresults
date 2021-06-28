@@ -1,7 +1,7 @@
 ## Linux CLI version of EmmaClient (Racom files only)
 
 EmmaClient stripped of everything but Racom files upload, bundled with simple CLI interface.  
-Go to release page for a net5 single-file self-contained binary.  
+Built as a net5 single-file self-contained binary -> [download](https://github.com/otahirs/liveresults/releases/tag/1.3.0_linux)   
 Made to work with https://github.com/Quick-Event/quickbox/ EmmaClient export service.  
 
 based on https://github.com/petlof/liveresults
