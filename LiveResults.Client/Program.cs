@@ -33,18 +33,18 @@ namespace LiveResults.Client
                     IsRequired = true,
                     ArgumentHelpName = "path"
                 },
-                new Option<string>(
-                    "--rawSplitsFile",
-                    description: "path to raw splits file"
-                ),
-                new Option<string>(
-                    "--dsqFile",
-                    description: "path to disqualified file"
-                ),
-                new Option<string>(
-                    "--radioFile",
-                    description: "path to radio controls file"
-                ),
+                new Option<string>("--rawSplitsFile", description: "path to raw splits file")
+                {
+                    ArgumentHelpName = "path"
+                },
+                new Option<string>("--dsqFile", description: "path to disqualified file")
+                {
+                    ArgumentHelpName = "path"
+                },
+                new Option<string>("--radioFile", description: "path to radio controls file")
+                {
+                    ArgumentHelpName = "path"
+                },
                 new Option<bool>(
                     "--isRelay",
                     description: "set if race is relay"
