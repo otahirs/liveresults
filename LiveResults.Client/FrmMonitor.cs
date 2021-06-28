@@ -1,26 +1,12 @@
 ﻿using LiveResults.Model;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-#if _CASPARCG_
-using LiveResults.CasparClient;
-#endif
 namespace LiveResults.Client
 {
-    public partial class FrmMonitor : Form
+    public partial class FrmMonitor
     {
         IExternalSystemResultParser m_Parser;
         List<EmmaMysqlClient> m_Clients = new List<EmmaMysqlClient>();
-
-#if _CASPARCG_
-        private CasparClient.CasparControlFrm casparForm = null;
-#endif
-        public FrmMonitor()
-        {
-            InitializeComponent();
-            Text = Text += ", " + Encoding.Default.EncodingName + "," + Encoding.Default.CodePage;
-        }
 
         private int m_CompetitionID;
 
@@ -34,8 +20,8 @@ namespace LiveResults.Client
         public void SetParser(IExternalSystemResultParser parser)
         {
             m_Parser = parser;
-            m_Parser.OnLogMessage += new LogMessageDelegate(m_Parser_OnLogMessage);
-            m_Parser.OnResult += new ResultDelegate(m_Parser_OnResult);
+            m_Parser.OnLogMessage += OnLogMessage;
+            m_Parser.OnResult += m_Parser_OnResult;
             m_Parser.OnRadioControl += (name, code, className, order) =>
             {
                 foreach (EmmaMysqlClient client in m_Clients)
@@ -73,72 +59,23 @@ namespace LiveResults.Client
             }
         }
 
-        void m_Parser_OnLogMessage(string msg)
+        public void Run()
         {
-            try
+            EmmaMysqlClient.EmmaServer[] servers = EmmaMysqlClient.GetServersFromConfig();
+
+            foreach (EmmaMysqlClient.EmmaServer srv in servers)
             {
-                if (listBox1 != null && !listBox1.IsDisposed)
-                {
-                    listBox1.Invoke(new MethodInvoker(delegate
-                    {
-                        listBox1.Items.Insert(0, DateTime.Now.ToString("hh:mm:ss") + " " + msg);
-                    }));
-                }
+                EmmaMysqlClient cli = new EmmaMysqlClient(srv.Host, 3309, srv.User, srv.Pw, srv.DB, m_CompetitionID);
+                m_Clients.Add(cli);
+                cli.OnLogMessage += OnLogMessage;
+                cli.Start();
             }
-            catch
-            {
-            }
+            m_Parser.Start();
         }
 
-        private void btnStartSTop_Click(object sender, EventArgs e)
+        void OnLogMessage(string msg)
         {
-            if (btnStartSTop.Text == "Start")
-            {
-                EmmaMysqlClient.EmmaServer[] servers = EmmaMysqlClient.GetServersFromConfig();
-
-                foreach (EmmaMysqlClient.EmmaServer srv in servers)
-                {
-                    EmmaMysqlClient cli = new EmmaMysqlClient(srv.Host, 3309, srv.User, srv.Pw, srv.DB, m_CompetitionID);
-                    m_Clients.Add(cli);
-                    cli.OnLogMessage += new LogMessageDelegate(cli_OnLogMessage);
-                    cli.Start();
-                }
-                m_Parser.Start();
-                btnStartSTop.Text = "Stop";
-#if _CASPARCG_
-                casparForm = new CasparControlFrm();
-                casparForm.Show();
-                casparForm.SetEmmaClient(m_Clients[0]);
-#endif
-            }
-            else
-            {
-                foreach (EmmaMysqlClient cli in m_Clients)
-                {
-                    cli.Stop();
-                }
-                m_Parser.Stop();
-                btnStartSTop.Text = "Start";
-            }
-        }
-
-        void cli_OnLogMessage(string msg)
-        {
-            if (listBox1 != null && !listBox1.IsDisposed)
-            {
-                listBox1.Invoke(new MethodInvoker(delegate
-                {
-                    listBox1.Items.Insert(0, DateTime.Now.ToString("hh:mm:ss") + " " + msg);
-                }));
-            }
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            if (btnStartSTop.Text == "Stop")
-                btnStartSTop_Click(null, new EventArgs());
-
-            this.Close();
+            Console.WriteLine( DateTime.Now.ToString("hh:mm:ss") + " " + msg);
         }
     }
 }

@@ -18,9 +18,6 @@ namespace LiveResults.Client.Parsers
         private readonly string m_radioDefinitionFile;
         private readonly DateTime m_zeroTime;
         private readonly bool m_isRelay;
-        public RacomFileSetParser()
-        {
-        }
 
         public RacomFileSetParser(string startlistFile, string splitsFile, string finishFile, string dsqFile, string radioDefinitionFile, DateTime zeroTime, bool isRelay)
         {

@@ -1,9 +1,8 @@
-﻿using LiveResults.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LiveResults.Client.Model
+namespace LiveResults.Model.Model
 {
     public enum SummaryMethod
     {

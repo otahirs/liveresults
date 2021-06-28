@@ -117,7 +117,7 @@ namespace LiveResults.Model
                 }
                 catch (Exception ee)
                 {
-                    System.Windows.Forms.MessageBox.Show("Could not connect to " + new Uri(ConfigurationManager.AppSettings["serverpollurl"]).Host + " to query connection, error was: " + ee.Message + "\r\n\r\nStacktrace: " + ee.StackTrace);
+                    System.Console.WriteLine("Could not connect to " + new Uri(ConfigurationManager.AppSettings["serverpollurl"]).Host + " to query connection, error was: " + ee.Message + "\r\n\r\nStacktrace: " + ee.StackTrace);
                 }
             }
 
